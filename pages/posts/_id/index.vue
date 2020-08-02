@@ -9,16 +9,30 @@
       <p class="post-content">{{ loadedPost.content }}</p>
     </section>
     <section class="post-feedback">
-      <p>Let me know what you think about the post, send a mail to <a href="mailto:feedback@my-awesome-domain.com">feedback@my-awesome-domain.com</a>.</p>
+      <p>
+        Let me know what you think about the post, send a mail to
+        <a href="mailto:feedback@my-awesome-domain.com">feedback@my-awesome-domain.com</a>.
+      </p>
     </section>
   </div>
 </template>
 
 <script>
+import axios from "axios";
 export default {
-  asyncData(context, callback) {
+  asyncData(context /*, callback*/) {
     console.log(context.route.params.id);
-    setTimeout(() => {
+    return axios
+      .get(
+        "https://nuxt-blog.firebaseio.com/posts/" + context.params.id + ".json"
+      )
+      .then((res) => {
+        return {
+          loadedPost: res.data,
+        };
+      })
+      .catch((e) => context.error(e));
+    /*setTimeout(() => {
       callback(null, {
         loadedPost: {
           id: "1",
@@ -32,7 +46,7 @@ export default {
             "https://static.pexels.com/photos/270348/pexels-photo-270348.jpeg",
         },
       });
-    }, 1000);
+    }, 1000);*/
   },
 };
 </script>
